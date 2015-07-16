@@ -54,11 +54,11 @@ class AssetDirectoryFilter extends BaseCssFilter
             }
 
             $file = PathUtils::resolveUrl($asset, $url);
-            $target = $directory->add($file);
+            $target = $directory->add($file, false, true);
 
             $path = PathUtils::resolveRelative($target, $asset->getTargetPath()).basename($file);
 
-            return str_replace($matches['url'], $path, $matches[0]);
+            return str_replace($matches['url'], $path . '?' . exec('git rev-parse --short HEAD'), $matches[0]);
         });
 
         $asset->setContent($content);

@@ -50,7 +50,7 @@ class AssetDirectory
      *
      * @return string target image path
      */
-    public function add($file, $force = false)
+    public function add($file, $force = false, $overwrite = false)
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException(sprintf('File "%s" does not exist.', $file));
@@ -59,8 +59,13 @@ class AssetDirectory
         if (false === $force && null !== $path = $this->getCache($file)) {
             return null === $this->target ? $path : $this->target.'/'.$path;
         }
-
-        $name = $this->findAvailableName($file);
+        
+        if (!$overwrite) {
+            $name = $this->findAvailableName($file);
+        }
+        else {
+            $name = basename($file);
+        }
 
         if (null !== $this->cache) {
             $this->cache->set(md5($file), serialize(array(filemtime($file), $name)));
